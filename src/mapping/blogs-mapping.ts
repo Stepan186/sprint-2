@@ -9,6 +9,7 @@ export function transformBlogsResponse (blogs: BlogDb[], pagination: paginationT
       id: v._id.toString(),
       name: v.name,
       websiteUrl: v.websiteUrl,
+      description: v.description,
       createdAt: v.createdAt
     };
   });

@@ -16,6 +16,8 @@ export const websiteUelUrlValidator = body("websiteUrl")
   .bail()
   .matches(`^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$`);
 
+export const descriptionValidator = body("description").isString().trim().isLength({max: 500})
+
 export const inputValidatorMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {

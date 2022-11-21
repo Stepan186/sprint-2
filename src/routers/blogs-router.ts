@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import {
+  descriptionValidator,
   inputValidatorMiddleware,
   nameValidator, websiteUelUrlValidator,
 } from '../middlewares/blogs-middleware';
@@ -47,13 +48,13 @@ blogsRouter.get("/:id", async(req: Request, res: Response) => {
 
 });
 
-blogsRouter.post("/", authMiddleware, nameValidator, websiteUelUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
+blogsRouter.post("/", authMiddleware, nameValidator, websiteUelUrlValidator, descriptionValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
   const data = req.body;
   const newBlog: BlogInterface = await blogsServices.createBlog(data);
   res.status(201).send(newBlog);
 });
 
-blogsRouter.put("/:id", authMiddleware, nameValidator, websiteUelUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
+blogsRouter.put("/:id", authMiddleware, nameValidator, descriptionValidator, websiteUelUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
   const data = req.body;
   const isUpdated = await blogsServices.updateBlog(req.params.id, data);
   if (isUpdated) {
