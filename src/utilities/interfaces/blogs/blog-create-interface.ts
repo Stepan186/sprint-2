@@ -1,4 +1,5 @@
 interface BlogCreateInterface {
   name: string,
-  websiteUrl: string
+  websiteUrl: string,
+  description: string
 }

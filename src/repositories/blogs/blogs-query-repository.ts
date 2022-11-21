@@ -29,7 +29,7 @@ export const blogsQueryRepository = {
     const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
 
     if (blog) {
-      return {id: blog._id.toString(), name: blog.name, websiteUrl: blog.websiteUrl, createdAt: blog.createdAt}
+      return {id: blog._id.toString(), name: blog.name, description: blog.description, websiteUrl: blog.websiteUrl, createdAt: blog.createdAt}
     }
     return null
   },

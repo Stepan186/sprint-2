@@ -5,9 +5,9 @@ import { ObjectId } from "mongodb";
 export const blogsRepository = {
 
   async createBlog(data: BlogCreateInterface): Promise<BlogInterface> {
-    const newBlog: IBlogDb = { name: data.name, websiteUrl: data.websiteUrl, createdAt: new Date().toISOString()};
+    const newBlog: IBlogDb = { name: data.name, websiteUrl: data.websiteUrl, description: data.description, createdAt: new Date().toISOString()};
     const result = await blogsCollection.insertOne(newBlog);
-    return { id: result.insertedId.toString(), name: newBlog.name, websiteUrl: newBlog.websiteUrl, createdAt: newBlog.createdAt}
+    return { id: result.insertedId.toString(), name: newBlog.name, description: newBlog.description, websiteUrl: newBlog.websiteUrl, createdAt: newBlog.createdAt}
   },
 
  async updateBlog (id: string, data: BlogUpdateInterface): Promise<boolean> {
