@@ -1,17 +1,15 @@
 import { Request, Response, Router } from "express";
 import {
   inputValidatorMiddleware,
-  nameValidator,
-  youtubeUrlValidator
-} from "../middlewares/blogs-middleware";
+  nameValidator, websiteUelUrlValidator,
+} from '../middlewares/blogs-middleware';
 import { authMiddleware } from "../middlewares/auth-middleware";
-import { BlogInterface, IBlogView } from "../utilities/interfaces/blogs/blog-interface";
+import { BlogInterface } from "../utilities/interfaces/blogs/blog-interface";
 import { blogsQueryRepository, orderByType, paginationType } from "../repositories/blogs/blogs-query-repository";
 import { blogsServices } from "../services/blogs-services";
 import { CreatePostForBlogInterface, PostsResponseInteface } from "../utilities/interfaces/posts/posts-interface";
 import { BlogsResponseInterface } from "../utilities/interfaces/blogs/blogs-response-interface";
 import {
-  blogIdValidation,
   contentValidation,
   shortDescriptionValidation,
   titileValidation
@@ -49,13 +47,13 @@ blogsRouter.get("/:id", async(req: Request, res: Response) => {
 
 });
 
-blogsRouter.post("/", authMiddleware, nameValidator, youtubeUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
+blogsRouter.post("/", authMiddleware, nameValidator, websiteUelUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
   const data = req.body;
   const newBlog: BlogInterface = await blogsServices.createBlog(data);
   res.status(201).send(newBlog);
 });
 
-blogsRouter.put("/:id", authMiddleware, nameValidator, youtubeUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
+blogsRouter.put("/:id", authMiddleware, nameValidator, websiteUelUrlValidator, inputValidatorMiddleware, async(req: Request, res: Response) => {
   const data = req.body;
   const isUpdated = await blogsServices.updateBlog(req.params.id, data);
   if (isUpdated) {

@@ -8,7 +8,7 @@ export const nameValidator = body("name")
   .isLength({ min: 1, max: 15 });
 
 
-export const youtubeUrlValidator = body("youtubeUrl")
+export const websiteUelUrlValidator = body("websiteUrl")
   .isString()
   .bail()
   .trim()
