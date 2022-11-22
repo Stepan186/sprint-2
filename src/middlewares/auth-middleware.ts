@@ -36,8 +36,12 @@ export const authPasswordValidator = body('password').isString()
 
 
 export const jwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const token: string | undefined = req.header("authorization")?.split(' ')[1];
-  if (!token) {
+  const header = req.header("authorization")?.split(' ');
+  const bearer = header ? header[0] : null
+  const token = header ? header[1] : null;
+
+
+  if (!token || !(bearer === 'Bearer') ) {
     res.sendStatus(401)
     return
   }
