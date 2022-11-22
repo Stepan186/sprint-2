@@ -1,4 +1,8 @@
-import { CommentsFromDbInterface, CommentsInterface } from '../../utilities/interfaces/comments/comments-interface';
+import {
+  CommentsFromDbInterface,
+  CommentsInterface,
+  CommentsResponseInterface
+} from '../../utilities/interfaces/comments/comments-interface';
 import { commentsColletion } from '../../db';
 import { ObjectId } from 'mongodb';
 import { orderByType, paginationType } from '../blogs/blogs-query-repository';
@@ -16,7 +20,7 @@ export const commentsQueryRepository = {
     } : null;
   },
 
-  findComments: async (postId: string, pagination: paginationType, orderBy: orderByType) => {
+  findComments: async (postId: string, pagination: paginationType, orderBy: orderByType): Promise<boolean | CommentsResponseInterface> => {
     const comments: CommentsFromDbInterface[] = await commentsColletion.find({postId: postId}).skip(pagination.pageNumber * pagination.pageSize - pagination.pageSize)
       .limit(pagination.pageSize).sort({ [orderBy.sortBy]: orderBy.sortDirection }).toArray()
     const totalCount = await commentsColletion.countDocuments({postId: postId})

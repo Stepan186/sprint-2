@@ -1,4 +1,8 @@
-import { CommentsInterface, CreateCommentInterface } from '../utilities/interfaces/comments/comments-interface';
+import {
+  CommentsInterface,
+  CommentsResponseInterface,
+  CreateCommentInterface
+} from '../utilities/interfaces/comments/comments-interface';
 import { jwtService } from '../application/jwt-service';
 import { JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
 import { postsQueryRepository } from '../repositories/posts/posts-query-repository';
@@ -19,8 +23,12 @@ export const postsServices = {
     return null
   },
 
-  findCommentsFromPost: async (postId: string, pagination: paginationType, orderBy: orderByType) => {
-    const comments = commentsQueryRepository.findComments(postId, pagination, orderBy)
+  findCommentsFromPost: async (postId: string, pagination: paginationType, orderBy: orderByType): Promise<boolean | CommentsResponseInterface > => {
+    const post = await postsQueryRepository.findPostById(postId)
+    if (post) {
+      return await commentsQueryRepository.findComments(postId, pagination, orderBy)
+    }
+    return false
   }
 }
 
