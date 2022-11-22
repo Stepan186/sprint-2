@@ -6,21 +6,28 @@ import { JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-in
 
 export const commentsServices = {
 
-  deleteComment: async(commentId: string, token: string): Promise<boolean> => {
+  deleteComment: async(commentId: string, token: string): Promise<boolean | number> => {
     const comment = await commentsQueryRepository.findComment(commentId);
     const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface;
-    if (comment && payload._id.toString() === comment.userId) {
-      return await commentsDbRepository.deleteComment(commentId);
+    if (!comment) {
+      return 404
     }
-    return false;
+    if (!(payload._id.toString() === comment.userId)) {
+      return 403
+    }
+    return await commentsDbRepository.deleteComment(commentId);
+
   },
 
-  updateComment: async(commentId: string, data: UpdateCommentInterface, token: string) => {
+  updateComment: async(commentId: string, data: UpdateCommentInterface, token: string): Promise<boolean | number> => {
     const comment = await commentsQueryRepository.findComment(commentId);
     const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface;
-    if (comment && payload._id.toString() === comment.userId) {
-      return await commentsDbRepository.updateComment(commentId, data);
+    if (!comment) {
+      return 404
     }
-    return false;
+    if (!(payload._id.toString() === comment.userId)) {
+      return 403
+    }
+    return await commentsDbRepository.updateComment(commentId, data);
   },
 };

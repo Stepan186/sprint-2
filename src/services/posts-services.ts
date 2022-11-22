@@ -23,3 +23,4 @@ export const postsServices = {
     const comments = commentsQueryRepository.findComments(postId, pagination, orderBy)
   }
 }
+

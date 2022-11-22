@@ -16,7 +16,7 @@ export const commentsDbRepository = {
     return result.deletedCount === 1
   },
 
-  updateComment: async (commentId: string, data: UpdateCommentInterface) => {
+  updateComment: async (commentId: string, data: UpdateCommentInterface): Promise<boolean> => {
     const result = await commentsColletion.updateOne({_id: new ObjectId(commentId)}, {$set: data})
     return result.matchedCount === 1
   },

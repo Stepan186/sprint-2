@@ -17,7 +17,7 @@ commentsRouter.delete('/:commentId', jwtMiddleware, inputValidatorMiddleware, as
   const token = req.header('authorization')?.split(' ')[1]
   if (token) {
     const result = await commentsServices.deleteComment(req.params.commentId, token)
-    result ? res.sendStatus(204) : res.sendStatus(403)
+    typeof result === 'number'  ? res.sendStatus(result) : res.sendStatus(204)
   }
 })
 
@@ -26,7 +26,7 @@ commentsRouter.put('/:commentId', jwtMiddleware, contentValidator, inputValidato
   const token = req.header('authorization')?.split(' ')[1]
   if (token) {
     const result = await commentsServices.updateComment(req.params.commentId, data, token)
-    result ? res.sendStatus(204) : res.sendStatus(403)
+    typeof result === 'number'  ? res.sendStatus(result) : res.sendStatus(204)
   }
 })
 

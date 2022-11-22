@@ -11,6 +11,10 @@ export const jwtService = {
 
   decodeToken: async (token: string) => {
     const key = process.env.JWT_SECRET || 'sckey';
-    return jwt.verify(token, key)
+    try {
+      return jwt.verify(token, key)
+    } catch (e) {
+      return false
+    }
   },
 };
