@@ -17,7 +17,6 @@ export interface PostDbInterface {
   content: string,
   blogId: string,
   blogName: string,
-  comments: CommentsInterface[]
   createdAt: string
 }
 

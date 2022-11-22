@@ -87,3 +87,19 @@ postsRouter.post('/:postId/comments', jwtMiddleware, contentValidator, inputVali
   const result: CommentsInterface | null = await postsServices.createCommentForPost(token, data, req.params.postId)
   result ? res.send(result) : res.send(404)
 })
+
+postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
+
+  let pagination: paginationType = {
+    pageNumber: req.query.pageNumber ? Number(req.query.pageNumber) : 1,
+    pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10
+  };
+
+  const orderBy: orderByType = {
+    sortBy: req.query.sortBy ? String(req.query.sortBy) : "createdAt",
+    sortDirection: String(req.query.sortDirection) === "asc" ? "asc" : "desc"
+  };
+
+  const comments = await postsServices.findCommentsFromPost(req.params.postId, pagination, orderBy)
+  res.send(comments)
+})

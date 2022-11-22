@@ -1,10 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { commentsQueryRepository } from '../repositories/comments/comments-query-repository';
-import { commentsDbRepository } from '../repositories/comments/comments-db-repository';
 import { contentValidation } from '../middlewares/posts-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import { CreateCommentInterface } from '../utilities/interfaces/comments/comments-interface';
-import { authMiddleware, jwtMiddleware } from '../middlewares/auth-middleware';
+import { jwtMiddleware } from '../middlewares/auth-middleware';
 import { commentsServices } from '../services/comments-services';
 
 export const commentsRouter = Router({})
@@ -18,7 +17,7 @@ commentsRouter.delete('/:commentId', jwtMiddleware, inputValidatorMiddleware, as
   const token = req.header('authorization')?.split(' ')[1]
   if (token) {
     const result = await commentsServices.deleteComment(req.params.commentId, token)
-    result ? res.sendStatus(204) : res.sendStatus(404)
+    result ? res.sendStatus(204) : res.sendStatus(403)
   }
 })
 

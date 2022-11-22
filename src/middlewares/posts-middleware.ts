@@ -1,5 +1,6 @@
-import { body, param } from "express-validator";
+import { body } from "express-validator";
 import { blogsQueryRepository } from "../repositories/blogs/blogs-query-repository";
+import { NextFunction } from 'express';
 
 export const titileValidation = body("title").isString().bail().trim().isLength({ min: 1, max: 30 });
 
@@ -17,4 +18,8 @@ export const blogIdValidation = body("blogId").custom(async (value, { req }) => 
     return true;
   }
 });
+
+export const postIdMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+}
 

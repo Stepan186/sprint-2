@@ -22,8 +22,7 @@ export const postsRepository = {
         shortDescription: data.shortDescription,
         content: data.content,
         blogId: data.blogId,
-        comments: [],
-        blogName: blog?.name,
+        blogName: blog.name,
         createdAt: new Date().toISOString()
       };
 
@@ -66,7 +65,6 @@ export const postsRepository = {
       title: data.title,
       shortDescription: data.shortDescription,
       content: data.content,
-      comments: [],
       blogId: blog.id,
       blogName: blog.name,
       createdAt: new Date().toISOString()

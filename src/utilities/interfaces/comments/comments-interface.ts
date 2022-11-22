@@ -12,13 +12,14 @@ export interface ICommentDb{
   content: string,
   userId: ObjectId,
   userLogin: string,
-  createdAt: string
+  createdAt: string,
+  postId: string
 }
 
 export interface CommentsFromDbInterface {
   _id: ObjectId,
   content: string,
-  userId: string,
+  userId: ObjectId,
   userLogin: string,
   createdAt: string
 }
@@ -29,4 +30,12 @@ export interface CreateCommentInterface {
 
 export interface UpdateCommentInterface {
   content: string
+}
+
+export interface CommentsResponseInterface {
+  pagesCount: number,
+  page: number,
+  pageSize: number,
+  totalCount: number,
+  items: CommentsInterface[]
 }

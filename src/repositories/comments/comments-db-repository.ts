@@ -21,12 +21,13 @@ export const commentsDbRepository = {
     return result.matchedCount === 1
   },
 
-  createComment: async (data: CreateCommentInterface, payload: JwtPayloadInterface) : Promise<CommentsInterface> => {
+  createComment: async (data: CreateCommentInterface, payload: JwtPayloadInterface, postId: string) : Promise<CommentsInterface> => {
     const newComment: ICommentDb = {
       content: data.content,
       userId: payload._id,
       userLogin: payload.login,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      postId: postId
     }
     const result = await commentsColletion.insertOne(newComment);
     return {
