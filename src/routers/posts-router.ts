@@ -14,6 +14,7 @@ import { orderByType, paginationType } from "../repositories/blogs/blogs-query-r
 import { contentValidator } from '../middlewares/comments-middleware';
 import { CommentsInterface } from '../utilities/interfaces/comments/comments-interface';
 import { postsServices } from '../services/posts-services';
+import { commentsQueryRepository } from '../repositories/comments/comments-query-repository';
 
 export const postsRouter = Router({});
 
@@ -85,7 +86,7 @@ postsRouter.post('/:postId/comments', jwtMiddleware, contentValidator, inputVali
   const data = req.body
   const token = req.header('authorization')?.split(' ')[1]
   const result: CommentsInterface | null = await postsServices.createCommentForPost(token, data, req.params.postId)
-  result ? res.send(result) : res.send(404)
+  result ? res.status(201).send(result) : res.send(404)
 })
 
 postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
@@ -100,6 +101,6 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     sortDirection: String(req.query.sortDirection) === "asc" ? "asc" : "desc"
   };
 
-  const comments = await postsServices.findCommentsFromPost(req.params.postId, pagination, orderBy)
+  const comments = await commentsQueryRepository.findComments(req.params.postId, pagination, orderBy)
   res.send(comments)
 })

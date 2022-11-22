@@ -1,10 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { commentsQueryRepository } from '../repositories/comments/comments-query-repository';
-import { contentValidation } from '../middlewares/posts-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import { CreateCommentInterface } from '../utilities/interfaces/comments/comments-interface';
 import { jwtMiddleware } from '../middlewares/auth-middleware';
 import { commentsServices } from '../services/comments-services';
+import { contentValidator } from '../middlewares/comments-middleware';
 
 export const commentsRouter = Router({})
 
@@ -21,7 +21,7 @@ commentsRouter.delete('/:commentId', jwtMiddleware, inputValidatorMiddleware, as
   }
 })
 
-commentsRouter.put('/:commentId', jwtMiddleware, contentValidation, inputValidatorMiddleware,  async (req: Request, res: Response) => {
+commentsRouter.put('/:commentId', jwtMiddleware, contentValidator, inputValidatorMiddleware,  async (req: Request, res: Response) => {
   const data: CreateCommentInterface = req.body
   const token = req.header('authorization')?.split(' ')[1]
   if (token) {
