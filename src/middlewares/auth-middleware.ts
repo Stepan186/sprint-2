@@ -18,12 +18,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
 export const authLoginValidator =  body('loginOrEmail').isString()
 export const authPasswordValidator = body('password').isString()
+export const codeValidator = body('code').isString()
 
 export const jwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const header = req.header("authorization")?.split(' ');
   const bearer = header ? header[0] : null
   const token = header ? header[1] : null;
-
 
   if (!token || !(bearer === 'Bearer') ) {
     res.sendStatus(401)
@@ -31,10 +31,5 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
   }
   const paylaod: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface
   const user = await usersQueryRepository.findUserById(paylaod._id)
-  if (user) {
-    next()
-    return
-  }
-  res.sendStatus(401)
-  return
+  user ? next() : res.sendStatus(401)
 };
