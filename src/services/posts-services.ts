@@ -25,10 +25,7 @@ export const postsServices = {
 
   findCommentsFromPost: async (postId: string, pagination: paginationType, orderBy: orderByType): Promise<boolean | CommentsResponseInterface > => {
     const post = await postsQueryRepository.findPostById(postId)
-    if (post) {
-      return await commentsQueryRepository.findComments(postId, pagination, orderBy)
-    }
-    return false
+    return post ? await commentsQueryRepository.findComments(postId, pagination, orderBy) : false
   }
 }
 

@@ -14,7 +14,6 @@ import { orderByType, paginationType } from "../repositories/blogs/blogs-query-r
 import { contentValidator } from '../middlewares/comments-middleware';
 import { CommentsInterface } from '../utilities/interfaces/comments/comments-interface';
 import { postsServices } from '../services/posts-services';
-import { commentsQueryRepository } from '../repositories/comments/comments-query-repository';
 
 export const postsRouter = Router({});
 
