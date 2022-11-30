@@ -9,3 +9,9 @@ export interface JwtPayloadInterface {
   email: string,
   login: string
 }
+
+export interface GetMeInterface {
+  userId: string,
+  email: string,
+  login: string
+}

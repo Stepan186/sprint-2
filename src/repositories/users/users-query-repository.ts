@@ -3,7 +3,6 @@ import { IUserDb, UsersFromDbInterface, UsersResponseInterface } from '../../uti
 import { userColletion } from '../../db';
 import { usersMapping } from '../../mapping/users-mapping';
 import { ObjectId } from 'mongodb';
-import { finished } from 'stream';
 
 export const usersQueryRepository = {
   findUsers: async (pagination: paginationType, orderBy: orderByType, searchLoginTerm: string | null, searchEmailTerm: string | null): Promise<UsersResponseInterface> => {
@@ -33,7 +32,7 @@ export const usersQueryRepository = {
         login: loginOrEmail
       }, { password: hashPassword, email: loginOrEmail }]
     });
-    return user? user : null;
+    return user ? user : null;
   },
 
   findUserById: async (userId: ObjectId): Promise<IUserDb | null> => {

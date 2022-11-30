@@ -9,6 +9,7 @@ import {
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import { emailValidation } from '../middlewares/users-middleware';
 import { jwtService } from '../application/jwt-service';
+import { GetMeInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
 
 export const authRouter = Router({})
 
@@ -27,7 +28,6 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
 authRouter.post('/registration', authPasswordValidator, emailValidation, registrationMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
   const data = req.body
   const result = await authServices.registration(data)
-  console.log(result);
   result ? res.sendStatus(204) : res.sendStatus(400)
 
 })
@@ -49,7 +49,7 @@ authRouter.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
   const token = req.header('authorization')?.split(' ')[1]
 
   if (token) {
-    const payload = await jwtService.decodeToken(token)
-    res.send(payload)
+    const userInfo: GetMeInterface = await authServices.getMe(token)
+    res.send(userInfo)
   }
 })

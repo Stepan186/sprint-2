@@ -40,7 +40,7 @@ export const registrationMiddleware = async (req: Request, res: Response, next: 
   const data = req.body
   const user = await usersDbRepository.findUserByEmailOrLogin(data.email, data.login)
   if (user) {
-    res.send({ errorsMessages: [{ message: "email or login already exist", field: "email" }] })
+    res.status(400).send({ errorsMessages: [{ message: "email or login already exist", field: "email" }] })
     return
   }
   next()

@@ -10,7 +10,6 @@ import { usersQueryRepository } from '../repositories/users/users-query-reposito
 import { authMiddleware } from '../middlewares/auth-middleware';
 import { usersDbRepository } from '../repositories/users/users-db-repository';
 import { usersServices } from '../services/users-services';
-import { userColletion } from '../db';
 
 export const usersRouter = Router({})
 
