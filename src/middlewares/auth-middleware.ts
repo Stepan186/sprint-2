@@ -39,8 +39,12 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
 export const registrationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const data = req.body
   const user = await usersDbRepository.findUserByEmailOrLogin(data.email, data.login)
-  if (user) {
-    res.status(400).send({ errorsMessages: [{ message: "email or login already exist", field: "email" }] })
+  if (user && user.email === data.email) {
+    res.status(400).send({ errorsMessages: [{ message: "this email already exist", field: "email" }] })
+    return
+  }
+  if (user && user.login === data.login) {
+    res.status(400).send({ errorsMessages: [{ message: "this login already exist", field: "login" }] })
     return
   }
   next()

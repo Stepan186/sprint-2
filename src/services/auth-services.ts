@@ -25,7 +25,7 @@ export const authServices = {
       data.password = await hashData(data.password)
       const newUser = await usersDbRepository.createUser(data);
       const code = await businessSerivce.sendCode(data.email);
-      return await usersDbRepository.updateCodeConfirmation(newUser.id, code);
+      return await usersDbRepository.updateCode(newUser.id, code);
     }
     return false;
   },
@@ -33,15 +33,17 @@ export const authServices = {
   confirmEmail: async(code: string): Promise<boolean> => {
     let user = await usersDbRepository.findUserByConfirmationCode(code);
     if (!user) return false;
+    if (user.codeConfirm) return false
     if (user.emailConfirm) return false;
     return await usersDbRepository.updateConfirmation(user.id);
   },
 
   resending: async(email: string): Promise<boolean> => {
     const user = await usersDbRepository.findUserByEmail(email);
-    if (!user || user.emailConfirm) return false;
+    if (!user) return false;
+    if (user.emailConfirm) return false
     const code = await businessSerivce.sendCode(email);
-    return await usersDbRepository.updateCodeConfirmation(user.id, code);
+    return await usersDbRepository.updateCode(user.id, code);
   },
 
   getMe: async (token: string): Promise<GetMeInterface> => {

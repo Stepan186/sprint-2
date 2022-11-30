@@ -12,7 +12,8 @@ export const usersDbRepository = {
       email: data.email,
       createdAt: new Date().toISOString(),
       emailConfirm: false,
-      codeConfirm: null
+      codeConfirm: false,
+      code: null
     };
 
     const result = await userColletion.insertOne(user);
@@ -41,13 +42,13 @@ export const usersDbRepository = {
     return result.matchedCount === 1
   },
 
-  updateCodeConfirmation: async (id: string, code: string): Promise<boolean> => {
-    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {codeConfirm: code} })
+  updateCode: async (id: string, code: string): Promise<boolean> => {
+    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {code: code} })
     return result.matchedCount === 1
   },
 
   findUserByConfirmationCode: async (code: string): Promise<null | UserInterface> => {
-    const user = await userColletion.findOne({codeConfirm: code})
+    const user = await userColletion.findOne({code: code})
     return user ? {...user, id: user._id.toString()} : null
 },
 
