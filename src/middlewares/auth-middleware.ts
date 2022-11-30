@@ -58,14 +58,43 @@ export const confirmationCodeMiddleware = async (req: Request, res: Response, ne
     return
   }
 
-  if (user && user.emailConfirm) {
-    res.status(400).send({ errorsMessages: [{ message: 'email already confirmed', field: 'email' }] });
-    return;
-  }
   if (user && user.codeConfirm) {
     res.status(400).send({ errorsMessages: [{ message: 'code already confirmed', field: 'code' }] });
     return;
   }
+
+  next()
+}
+
+export const confirmationEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const code = req.body.code
+  const user = await usersDbRepository.findUserByConfirmationCode(code)
+  if (!user) {
+    res.sendStatus(404)
+    return
+  }
+
+  if (user && user.emailConfirm) {
+    res.status(400).send({ errorsMessages: [{ message: 'email already confirmed', field: 'email' }] });
+    return;
+  }
+
+  next()
+}
+
+
+export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await usersDbRepository.findUserByConfirmationCode(req.body.code)
+  if (!user) {
+    res.sendStatus(404)
+    return
+  }
+
+  if (user && user.emailConfirm) {
+    res.status(400).send({ errorsMessages: [{ message: 'email already confirmed', field: 'email' }] });
+    return;
+  }
+
 
   next()
 }
