@@ -29,7 +29,6 @@ authRouter.post('/registration', authPasswordValidator, emailValidation, registr
   const data = req.body
   const result = await authServices.registration(data)
   result ? res.sendStatus(204) : res.sendStatus(400)
-
 })
 
 authRouter.post('/registration-confirmation', codeValidator, confirmationCodeMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
@@ -37,7 +36,6 @@ authRouter.post('/registration-confirmation', codeValidator, confirmationCodeMid
   const result = await authServices.confirmEmail(code)
   result ? res.sendStatus(204) : res.sendStatus(400)
 })
-
 
 authRouter.post('/registration-email-resending', emailValidation, confirmationCodeMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
   const email = req.body.email

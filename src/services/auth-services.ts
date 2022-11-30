@@ -34,7 +34,6 @@ export const authServices = {
     let user = await usersDbRepository.findUserByConfirmationCode(code);
     if (user) return await usersDbRepository.updateConfirmation(user.id);
     return false
-
   },
 
   resending: async(email: string): Promise<boolean> => {
