@@ -8,7 +8,6 @@ export interface UserInterface{
   createdAt: string
   emailConfirm: boolean
   code: string | null
-  codeConfirm: boolean,
 }
 
 export interface CreateUserInterface{
@@ -24,7 +23,6 @@ export interface IUserDb {
   createdAt: string
   emailConfirm: boolean
   code: string | null
-  codeConfirm: boolean,
 }
 
 export interface UserCreateResponeIntrface {
@@ -49,6 +47,5 @@ export interface UsersFromDbInterface {
   createdAt: string
   emailConfirm: boolean
   code: string | null
-  codeConfirm: boolean,
 }
 

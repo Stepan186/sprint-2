@@ -49,22 +49,6 @@ export const registrationMiddleware = async (req: Request, res: Response, next: 
   next()
 }
 
-export const confirmationCodeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const code = req.body.code
-  const user = await usersDbRepository.findUserByCode(code)
-  if (!user) {
-    res.sendStatus(404)
-    return
-  }
-
-  if (user && user.codeConfirm) {
-    res.status(400).send({ errorsMessages: [{ message: 'code already confirmed', field: 'code' }] });
-    return;
-  }
-
-  next()
-}
-
 export const confirmationEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.body.code
   const user = await usersDbRepository.findUserByCode(code)
@@ -81,7 +65,7 @@ export const confirmationEmailMiddleware = async (req: Request, res: Response, n
   next()
 }
 
-export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const checkUserEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await usersDbRepository.findUserByEmail(req.body.email)
   if (!user) {
     res.status(400).send({ errorsMessages: [{ message: 'user with this email does not exist', field: "email" }] })
@@ -93,7 +77,7 @@ export const emailResendingMiddleware = async (req: Request, res: Response, next
     return;
   }
 
-
+  req.user = user
   next()
 }
 
@@ -103,7 +87,6 @@ export const checkCodeMiddleware = async (req: Request, res: Response, next: Nex
     res.status(400).send({ errorsMessages: [{ message: "invalid code", field: 'code' }] })
     return
   }
-
-
-  next()
+  req.user = user
+  return next()
 }

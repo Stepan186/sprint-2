@@ -8,7 +8,7 @@ import {
   JwtPayloadInterface
 } from '../utilities/interfaces/auth/jwt-payload-interface';
 import { usersDbRepository } from '../repositories/users/users-db-repository';
-import { CreateUserInterface } from '../utilities/interfaces/users/user-interface';
+import { CreateUserInterface, UserInterface } from '../utilities/interfaces/users/user-interface';
 import { businessSerivce } from '../domain/business-serivce';
 
 export const authServices = {
@@ -20,14 +20,10 @@ export const authServices = {
   },
 
   registration: async(data: CreateUserInterface): Promise<boolean> => {
-    const user = await usersDbRepository.findUserByEmailOrLogin(data.email, data.login);
-    if (!user) {
-      data.password = await hashData(data.password)
-      const newUser = await usersDbRepository.createUser(data);
-      const code = await businessSerivce.sendCode(data.email);
-      return await usersDbRepository.updateCode(newUser.id, code);
-    }
-    return false;
+    data.password = await hashData(data.password);
+    const newUser = await usersDbRepository.createUser(data);
+    const code = await businessSerivce.sendCode(data.email);
+    return await usersDbRepository.updateCode(newUser.id, code);
   },
 
   confirmEmail: async(code: string): Promise<boolean> => {
@@ -36,9 +32,7 @@ export const authServices = {
     return false
   },
 
-  resending: async(email: string): Promise<boolean> => {
-    const user = await usersDbRepository.findUserByEmail(email);
-    if (!user) return false;
+  resending: async(user: UserInterface, email: string): Promise<boolean> => {
     const code = await businessSerivce.sendCode(email);
     return await usersDbRepository.updateCode(user.id, code);
   },

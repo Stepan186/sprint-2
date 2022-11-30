@@ -6,13 +6,12 @@ import { ObjectId } from 'mongodb';
 
 export const usersDbRepository = {
   createUser: async(data: CreateUserInterface): Promise<UserCreateResponeIntrface> => {
-    const user = {
+    const user: IUserDb = {
       login: data.login,
       password: data.password,
       email: data.email,
       createdAt: new Date().toISOString(),
       emailConfirm: false,
-      codeConfirm: false,
       code: null
     };
 
@@ -38,7 +37,7 @@ export const usersDbRepository = {
   },
 
   updateConfirmation: async (id: string): Promise<boolean> => {
-    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {emailConfirm: true, codeConfirm: true}})
+    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {emailConfirm: true}})
     return result.matchedCount === 1
   },
 
