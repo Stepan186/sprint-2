@@ -53,11 +53,19 @@ export const registrationMiddleware = async (req: Request, res: Response, next: 
 export const confirmationCodeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.body.code
   const user = await usersDbRepository.findUserByConfirmationCode(code)
-  if (!user) res.sendStatus(404)
-  if (user) {
-    if (user.codeConfirm) res.status(400).send({ errorsMessages: [{ message: "code already confirmed", field: "code" }] })
-    if (user.emailConfirm) res.status(400).send({ errorsMessages: [{ message: "email already confirmed", field: "email" }] })
+  if (!user) {
+    res.sendStatus(404)
     return
+  }
+  if (user) {
+    if (user.codeConfirm) {
+      res.status(400).send({ errorsMessages: [{ message: "code already confirmed", field: "code" }] })
+      return
+    }
+    if (user.emailConfirm) {
+      res.status(400).send({ errorsMessages: [{ message: "email already confirmed", field: "email" }] })
+      return
+    }
   }
   next()
 }

@@ -38,7 +38,7 @@ export const usersDbRepository = {
   },
 
   updateConfirmation: async (id: string): Promise<boolean> => {
-    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {emailConfirm: true}})
+    let result = await userColletion.updateOne({_id: new ObjectId(id)}, {$set: {emailConfirm: true, codeConfirm: true}})
     return result.matchedCount === 1
   },
 
