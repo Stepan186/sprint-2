@@ -81,11 +81,10 @@ export const confirmationEmailMiddleware = async (req: Request, res: Response, n
   next()
 }
 
-
 export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await usersDbRepository.findUserByEmail(req.body.email)
   if (!user) {
-    res.sendStatus(400)
+    res.sendStatus(404)
     return
   }
 
@@ -99,7 +98,7 @@ export const emailResendingMiddleware = async (req: Request, res: Response, next
 }
 
 export const checkCodeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await usersDbRepository.findUserByCode(req.body.email)
+  const user = await usersDbRepository.findUserByCode(req.body.code)
   if (!user) {
     res.status(400).send({ errorsMessages: [{ message: "invalid code", field: 'code' }] })
     return
