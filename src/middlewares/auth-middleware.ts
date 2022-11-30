@@ -84,7 +84,7 @@ export const confirmationEmailMiddleware = async (req: Request, res: Response, n
 export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await usersDbRepository.findUserByEmail(req.body.email)
   if (!user) {
-    res.sendStatus(404)
+    res.status(400).send({ errorsMessages: [{ message: 'user with this email does not exist', field: "email" }] })
     return
   }
 
