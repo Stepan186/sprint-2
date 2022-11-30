@@ -32,16 +32,14 @@ export const authServices = {
 
   confirmEmail: async(code: string): Promise<boolean> => {
     let user = await usersDbRepository.findUserByConfirmationCode(code);
-    if (!user) return false;
-    if (user.codeConfirm) return false
-    if (user.emailConfirm) return false;
-    return await usersDbRepository.updateConfirmation(user.id);
+    if (user) return await usersDbRepository.updateConfirmation(user.id);
+    return false
+
   },
 
   resending: async(email: string): Promise<boolean> => {
     const user = await usersDbRepository.findUserByEmail(email);
     if (!user) return false;
-    if (user.emailConfirm) return false
     const code = await businessSerivce.sendCode(email);
     return await usersDbRepository.updateCode(user.id, code);
   },
