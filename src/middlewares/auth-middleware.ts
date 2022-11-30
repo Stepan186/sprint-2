@@ -87,6 +87,11 @@ export const checkCodeMiddleware = async (req: Request, res: Response, next: Nex
     res.status(400).send({ errorsMessages: [{ message: "invalid code", field: 'code' }] })
     return
   }
+
+  if (user && user.emailConfirm) {
+    res.status(400).send({ errorsMessages: [{ message: "invalid code", field: 'code' }] })
+    return
+  }
   req.user = user
   return next()
 }
