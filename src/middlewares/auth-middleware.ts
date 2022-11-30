@@ -84,7 +84,7 @@ export const confirmationEmailMiddleware = async (req: Request, res: Response, n
 
 
 export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await usersDbRepository.findUserByConfirmationCode(req.body.code)
+  const user = await usersDbRepository.findUserByEmail(req.body.email)
   if (!user) {
     res.sendStatus(404)
     return
