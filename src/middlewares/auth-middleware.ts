@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import { jwtService } from '../application/jwt-service';
 import { usersQueryRepository } from '../repositories/users/users-query-repository';
 import { JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
+import { usersDbRepository } from '../repositories/users/users-db-repository';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -33,3 +34,14 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
   const user = await usersQueryRepository.findUserById(paylaod._id)
   user ? next() : res.sendStatus(401)
 };
+
+
+export const registrationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const data = req.body
+  const user = await usersDbRepository.findUserByEmailOrLogin(data.email, data.login)
+  if (user) {
+    res.send({ errorsMessages: [{ message: "email or login already exist", field: "email" }] })
+    return
+  }
+  next()
+}

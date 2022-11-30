@@ -31,8 +31,8 @@ export const usersDbRepository = {
     return result.deletedCount === 1
   },
 
-  findUserByEmailOrLogin: async (loginOrEmail: string): Promise<null | IUserDb> => {
-    const user = await userColletion.findOne({$or: [{email: loginOrEmail}, {login: loginOrEmail}]})
+  findUserByEmailOrLogin: async (email: string, login: string): Promise<null | IUserDb> => {
+    const user = await userColletion.findOne({$or: [{email: email}, {login: login}]})
     return user ? user : null
   },
 

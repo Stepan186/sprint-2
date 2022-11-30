@@ -1,8 +1,14 @@
 import { Request, Response, Router } from 'express';
 import { authServices } from '../services/auth-services';
-import { authLoginValidator, authPasswordValidator, codeValidator } from '../middlewares/auth-middleware';
+import {
+  authLoginValidator,
+  authPasswordValidator,
+  codeValidator,
+  jwtMiddleware, registrationMiddleware
+} from '../middlewares/auth-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import { emailValidation } from '../middlewares/users-middleware';
+import { jwtService } from '../application/jwt-service';
 
 export const authRouter = Router({})
 
@@ -18,7 +24,7 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
 })
 
 
-authRouter.post('/registration', authPasswordValidator, emailValidation, inputValidatorMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/registration', authPasswordValidator, emailValidation, registrationMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
   const data = req.body
   const result = await authServices.registration(data)
   console.log(result);
@@ -37,4 +43,13 @@ authRouter.post('/registration-email-resending', emailValidation, inputValidator
   const email = req.body.email
   const result = await authServices.resending(email)
   result ? res.sendStatus(204) : res.sendStatus(400)
+})
+
+authRouter.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
+  const token = req.header('authorization')?.split(' ')[1]
+
+  if (token) {
+    const payload = await jwtService.decodeToken(token)
+    res.send(payload)
+  }
 })
