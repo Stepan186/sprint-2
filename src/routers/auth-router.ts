@@ -2,13 +2,12 @@ import { Request, Response, Router } from 'express';
 import { authServices } from '../services/auth-services';
 import {
   authLoginValidator,
-  authPasswordValidator,
+  authPasswordValidator, checkCodeMiddleware,
   codeValidator, confirmationCodeMiddleware, confirmationEmailMiddleware, emailResendingMiddleware,
   jwtMiddleware, registrationMiddleware
 } from '../middlewares/auth-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
-import { emailValidation } from '../middlewares/users-middleware';
-import { jwtService } from '../application/jwt-service';
+import { emailValidation, loginValidation, passwordValidation } from '../middlewares/users-middleware';
 import { GetMeInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
 
 export const authRouter = Router({})
@@ -25,13 +24,13 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
 })
 
 
-authRouter.post('/registration', authPasswordValidator, emailValidation, registrationMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/registration', authPasswordValidator, emailValidation, loginValidation, passwordValidation, registrationMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
   const data = req.body
   const result = await authServices.registration(data)
   result ? res.sendStatus(204) : res.sendStatus(400)
 })
 
-authRouter.post('/registration-confirmation', codeValidator, confirmationEmailMiddleware, confirmationCodeMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation', codeValidator, checkCodeMiddleware, confirmationEmailMiddleware, confirmationCodeMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
   const code = req.body.code
   const result = await authServices.confirmEmail(code)
   result ? res.sendStatus(204) : res.sendStatus(400)

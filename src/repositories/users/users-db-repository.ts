@@ -47,7 +47,7 @@ export const usersDbRepository = {
     return result.matchedCount === 1
   },
 
-  findUserByConfirmationCode: async (code: string): Promise<null | UserInterface> => {
+  findUserByCode: async (code: string): Promise<null | UserInterface> => {
     const user = await userColletion.findOne({code: code})
     return user ? {...user, id: user._id.toString()} : null
 },

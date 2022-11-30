@@ -35,7 +35,6 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
   user ? next() : res.sendStatus(401)
 };
 
-
 export const registrationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const data = req.body
   const user = await usersDbRepository.findUserByEmailOrLogin(data.email, data.login)
@@ -52,7 +51,7 @@ export const registrationMiddleware = async (req: Request, res: Response, next: 
 
 export const confirmationCodeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.body.code
-  const user = await usersDbRepository.findUserByConfirmationCode(code)
+  const user = await usersDbRepository.findUserByCode(code)
   if (!user) {
     res.sendStatus(404)
     return
@@ -68,7 +67,7 @@ export const confirmationCodeMiddleware = async (req: Request, res: Response, ne
 
 export const confirmationEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.body.code
-  const user = await usersDbRepository.findUserByConfirmationCode(code)
+  const user = await usersDbRepository.findUserByCode(code)
   if (!user) {
     res.sendStatus(404)
     return
@@ -86,13 +85,24 @@ export const confirmationEmailMiddleware = async (req: Request, res: Response, n
 export const emailResendingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await usersDbRepository.findUserByEmail(req.body.email)
   if (!user) {
-    res.sendStatus(404)
+    res.sendStatus(400)
     return
   }
 
   if (user && user.emailConfirm) {
     res.status(400).send({ errorsMessages: [{ message: 'email already confirmed', field: 'email' }] });
     return;
+  }
+
+
+  next()
+}
+
+export const checkCodeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await usersDbRepository.findUserByCode(req.body.email)
+  if (!user) {
+    res.status(400).send({ errorsMessages: [{ message: "invalid code", field: 'code' }] })
+    return
   }
 
 

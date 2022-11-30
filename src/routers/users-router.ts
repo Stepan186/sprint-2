@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { emailValidation, loginValidatiom, passwordValidatiom } from '../middlewares/users-middleware';
+import { emailValidation, loginValidation, passwordValidation, } from '../middlewares/users-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import {
   orderByType,
@@ -10,15 +10,13 @@ import { usersQueryRepository } from '../repositories/users/users-query-reposito
 import { authMiddleware } from '../middlewares/auth-middleware';
 import { usersDbRepository } from '../repositories/users/users-db-repository';
 import { usersServices } from '../services/users-services';
+import { paginationMapping } from '../utilities/pagination/pagination-mapping';
 
 export const usersRouter = Router({})
 
 usersRouter.get('/', authMiddleware, inputValidatorMiddleware, async (req: Request, res: Response) => {
 
-  const pagination: paginationType = {
-    pageNumber: req.query.pageNumber ? Number(req.query.pageNumber) : 1,
-    pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10
-  };
+  const pagination: paginationType = await paginationMapping(req)
 
   const orderBy: orderByType = {
     sortBy: req.query.sortBy ? String(req.query.sortBy) : "createdAt",
@@ -35,7 +33,7 @@ usersRouter.get('/', authMiddleware, inputValidatorMiddleware, async (req: Reque
   res.status(200).send(users)
 })
 
-usersRouter.post('/',authMiddleware, loginValidatiom, passwordValidatiom, emailValidation, inputValidatorMiddleware, async  (req: Request, res: Response) => {
+usersRouter.post('/',authMiddleware, loginValidation, passwordValidation, emailValidation, inputValidatorMiddleware, async  (req: Request, res: Response) => {
   const data = req.body
   const user = await usersServices.createUser(data)
   res.status(201).send(user)
