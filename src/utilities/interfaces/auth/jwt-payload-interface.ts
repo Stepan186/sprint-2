@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb';
 
-export interface AccessTokenResponceInterface {
+export interface TokensInterface {
   accessToken: string
+  refreshToken: string
 }
 
 export interface JwtPayloadInterface {

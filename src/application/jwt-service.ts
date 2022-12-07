@@ -1,12 +1,16 @@
 import jwt from 'jsonwebtoken';
-import { AccessTokenResponceInterface, JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
+import {
+  JwtPayloadInterface,
+  TokensInterface
+} from '../utilities/interfaces/auth/jwt-payload-interface';
 
 export const jwtService = {
 
-  generateToken: async(payload: JwtPayloadInterface): Promise<AccessTokenResponceInterface> => {
+  generateToken: async(payload: JwtPayloadInterface): Promise<TokensInterface> => {
     const key = process.env.JWT_SECRET || 'sckey';
-    const token =  jwt.sign(payload, key, { expiresIn: '1h' });
-    return {accessToken: token}
+    const acToken =  jwt.sign(payload, key, { expiresIn: '10sec' });
+    const rfToken = jwt.sign(payload, key, {expiresIn: '20sec'})
+    return {accessToken: acToken, refreshToken: rfToken}
   },
 
   decodeToken: async (token: string) => {

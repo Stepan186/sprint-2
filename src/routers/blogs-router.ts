@@ -26,11 +26,11 @@ blogsRouter.get("/", async(req: Request, res: Response) => {
     pageNumber: req.query.pageNumber ? Number(req.query.pageNumber) : 1,
     pageSize: req.query.pageSize ? Number(req.query.pageSize) : 10
   };
-
   const orderBy: orderByType = {
     sortBy: req.query.sortBy ? String(req.query.sortBy) : "createdAt",
     sortDirection: String(req.query.sortDirection) === "asc" ? "asc" : "desc"
   };
+
 
   const blogs: BlogsResponseInterface = await blogsQueryRepository.findBlogs(pagination, orderBy, searchNameTerm);
   res.send(blogs);

@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt'
 import * as dotenv from 'dotenv';
-import { JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
 dotenv.config()
 
 

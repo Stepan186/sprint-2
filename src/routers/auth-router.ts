@@ -3,7 +3,7 @@ import { authServices } from '../services/auth-services';
 import {
   authLoginValidator,
   authPasswordValidator, checkCodeMiddleware, checkUserEmailMiddleware,
-  codeValidator, confirmationEmailMiddleware,
+  codeValidator,
   jwtMiddleware, registrationMiddleware
 } from '../middlewares/auth-middleware';
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
@@ -17,7 +17,7 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
   const result = await authServices.login(data)
 
   if (result) {
-    res.send(result)
+    res.sendStatus(204)
     return
   }
   res.sendStatus(401)
@@ -47,4 +47,9 @@ authRouter.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
   const token = req.header('authorization')!.split(' ')[1]
   const userInfo: GetMeInterface = await authServices.getMe(token);
   res.send(userInfo);
+})
+
+authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+  const rfToken = req.cookies.refreshToken
+
 })

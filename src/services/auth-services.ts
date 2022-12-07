@@ -3,18 +3,16 @@ import { hashData } from './password-services';
 import { usersQueryRepository } from '../repositories/users/users-query-repository';
 import { jwtService } from '../application/jwt-service';
 import {
-  AccessTokenResponceInterface,
   GetMeInterface,
-  JwtPayloadInterface
+  JwtPayloadInterface, TokensInterface
 } from '../utilities/interfaces/auth/jwt-payload-interface';
 import { usersDbRepository } from '../repositories/users/users-db-repository';
 import { CreateUserInterface, UserInterface } from '../utilities/interfaces/users/user-interface';
 import { businessSerivce } from '../domain/business-serivce';
 
 export const authServices = {
-  login: async(data: LoginInterface): Promise<AccessTokenResponceInterface|null> => {
+  login: async(data: LoginInterface): Promise<TokensInterface|null> => {
     const hashPassword = await hashData(data.password);
-    console.log();
     const user = await usersQueryRepository.checkUserByLoginAndPas(hashPassword, data.loginOrEmail);
     return user ? await jwtService.generateToken({ _id: user._id, email: user.email, login: user.login }) : null;
   },
