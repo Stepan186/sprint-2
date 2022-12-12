@@ -84,7 +84,7 @@ export const checkCodeMiddleware = async (req: Request, res: Response, next: Nex
 }
 
 export const checkRefreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const rfToken: string | undefined = req.cookies.refershToken
+  const rfToken: string | undefined = req.cookies.refreshToken
   if (!rfToken) {
     res.sendStatus(401)
     return

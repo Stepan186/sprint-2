@@ -3,11 +3,15 @@ import { RefreshTokenFromDb } from '../../utilities/interfaces/auth/jwt-payload-
 
 export const refreshTokenDbRepository = {
   createRfToken: async(token: string): Promise<void> => {
-    const newToken = await tokenCollection.insertOne({token})
+    const newToken = await tokenCollection.insertOne({token: token})
   },
 
   findRfRoken: async (data: string): Promise<RefreshTokenFromDb | null> => {
     const token = await tokenCollection.findOne({token: data})
     return token ? token : null
+  },
+
+  findAll: async () => {
+    return tokenCollection.find({}).toArray();
   }
 };

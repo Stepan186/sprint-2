@@ -9,6 +9,8 @@ import {
 import { inputValidatorMiddleware } from '../middlewares/blogs-middleware';
 import { emailValidation, loginValidation, passwordValidation } from '../middlewares/users-middleware';
 import { GetMeInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
+import { tokenCollection } from '../db';
+import { refreshTokenDbRepository } from '../repositories/refresh-tokens/refresh-token-db-repository';
 
 export const authRouter = Router({})
 
@@ -60,3 +62,4 @@ authRouter.post('/logout', checkRefreshTokenMiddleware, async (req: Request, res
   const result = await authServices.logout(token)
   result ? res.sendStatus(204) : res.sendStatus(401)
 })
+

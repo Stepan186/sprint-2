@@ -48,7 +48,7 @@ export const authServices = {
     if (checkToken) return null
     const payload = {_id: new ObjectId(user.id), email: user.email, login: user.login}
     const tokens = await jwtService.generateToken(payload)
-    await refreshTokenDbRepository.createRfToken(tokens.refreshToken)
+    await refreshTokenDbRepository.createRfToken(token)
     return tokens
   },
 

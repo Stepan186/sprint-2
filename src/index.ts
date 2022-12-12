@@ -7,12 +7,14 @@ import { runDb } from "./db";
 import { usersRouter } from "./routers/users-router";
 import { authRouter } from './routers/auth-router';
 import { commentsRouter } from './routers/comments-router';
+import cookieParser from "cookie-parser"
 
 const app = express()
 const port = process.env.PORT || 3000
 const parserMiddleware = bodyParser({})
 
 
+app.use(cookieParser())
 app.use(parserMiddleware)
 app.use('/blogs', blogsRouter)
 app.use('/testing', testingRouter)
