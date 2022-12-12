@@ -9,7 +9,7 @@ export const jwtService = {
   generateToken: async(payload: JwtPayloadInterface): Promise<TokensInterface> => {
     const key = process.env.JWT_SECRET || 'sckey';
     const acToken =  jwt.sign(payload, key, { expiresIn: '10sec' });
-    const rfToken = jwt.sign(payload, key, {expiresIn: '1h'})
+    const rfToken = jwt.sign(payload, key, {expiresIn: '20sec'})
     return {accessToken: acToken, refreshToken: rfToken}
   },
 
