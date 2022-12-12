@@ -51,15 +51,18 @@ authRouter.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
   res.send(userInfo);
 })
 
-authRouter.post('/refresh-token', checkRefreshTokenMiddleware, async (req: Request, res: Response) => {
-  const rfToken = req.cookies.refreshToken
-  const result = await authServices.refreshToken(rfToken, req.user!)
-  result ? res.send(result) : res.sendStatus(401)
-})
+authRouter.post('/refresh-token', checkRefreshTokenMiddleware, async(req: Request, res: Response) => {
+  const rfToken = req.cookies.refreshToken;
+  const result = await authServices.refreshToken(rfToken, req.user!);
+  result ? res.cookie('refreshToken', result.refreshToken, {
+    httpOnly: true,
+    secure: true
+  }).send({ accessToken: result.accessToken }) : res.sendStatus(401);
+});
 
-authRouter.post('/logout', checkRefreshTokenMiddleware, async (req: Request, res: Response) => {
-  const token = req.cookies.refreshToken
-  const result = await authServices.logout(token)
-  result ? res.sendStatus(204) : res.sendStatus(401)
-})
+authRouter.post('/logout', checkRefreshTokenMiddleware, async(req: Request, res: Response) => {
+  const token = req.cookies.refreshToken;
+  const result = await authServices.logout(token);
+  result ? res.sendStatus(204) : res.sendStatus(401);
+});
 
