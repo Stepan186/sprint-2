@@ -17,7 +17,7 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
   const result = await authServices.login(data)
 
   if (result) {
-    res.cookie("refreshToken", result.refreshToken, {httpOnly: true, secure: true} ).send(result.accessToken)
+    res.cookie("refreshToken", result.refreshToken, {httpOnly: true, secure: true} ).send({accessToken: result.accessToken})
     return
   }
   res.sendStatus(401)
