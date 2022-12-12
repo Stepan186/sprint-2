@@ -4,6 +4,8 @@ import { jwtService } from '../application/jwt-service';
 import { usersQueryRepository } from '../repositories/users/users-query-repository';
 import { JwtPayloadInterface } from '../utilities/interfaces/auth/jwt-payload-interface';
 import { usersDbRepository } from '../repositories/users/users-db-repository';
+import { tokenCollection } from '../db';
+import { refreshTokenDbRepository } from '../repositories/refresh-tokens/refresh-token-db-repository';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -30,8 +32,8 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
     res.sendStatus(401)
     return
   }
-  const paylaod: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface
-  const user = await usersQueryRepository.findUserById(paylaod._id)
+  const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface
+  const user = await usersQueryRepository.findUserById(payload._id)
   user ? next() : res.sendStatus(401)
 };
 
@@ -94,4 +96,19 @@ export const checkCodeMiddleware = async (req: Request, res: Response, next: Nex
   }
   req.user = user
   return next()
+}
+
+export const checkRefreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const frToken: string | undefined = req.cookies.refershToken
+  if (!frToken) {
+    res.sendStatus(401)
+    return
+  }
+
+  const checkToken = await refreshTokenDbRepository.findRfRoken(frToken)
+  if (checkToken) {
+    res.sendStatus(401)
+    return
+  }
+  next()
 }

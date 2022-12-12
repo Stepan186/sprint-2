@@ -9,6 +9,8 @@ import {
 import { usersDbRepository } from '../repositories/users/users-db-repository';
 import { CreateUserInterface, UserInterface } from '../utilities/interfaces/users/user-interface';
 import { businessSerivce } from '../domain/business-serivce';
+import { tokenCollection } from '../db';
+import { refreshTokenDbRepository } from '../repositories/refresh-tokens/refresh-token-db-repository';
 
 export const authServices = {
   login: async(data: LoginInterface): Promise<TokensInterface|null> => {
@@ -27,7 +29,7 @@ export const authServices = {
   confirmEmail: async(code: string): Promise<boolean> => {
     let user = await usersDbRepository.findUserByCode(code);
     if (user) return await usersDbRepository.updateConfirmation(user.id);
-    return false
+    return false;
   },
 
   resending: async(user: UserInterface, email: string): Promise<boolean> => {
@@ -35,9 +37,18 @@ export const authServices = {
     return await usersDbRepository.updateCode(user.id, code);
   },
 
-  getMe: async (token: string): Promise<GetMeInterface> => {
+  getMe: async(token: string): Promise<GetMeInterface> => {
+    const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface;
+    return { userId: payload._id.toString(), email: payload.email, login: payload.login };
+  },
+
+  refreshToken: async(token: string): Promise<TokensInterface | null> => {
     const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface
-    return {userId: payload._id.toString(), email: payload.email, login: payload.login }
+    const checkToken = await refreshTokenDbRepository.findRfRoken(token)
+    if (checkToken) return null
+    const tokens = await jwtService.generateToken(payload)
+    await refreshTokenDbRepository.createRfToken(tokens.refreshToken)
+    return tokens
   }
 };
 

@@ -16,3 +16,13 @@ export interface GetMeInterface {
   email: string,
   login: string
 }
+
+
+export interface DbRefreshToken {
+  token: string
+}
+
+export interface RefreshTokenFromDb {
+  token: string,
+  _id: ObjectId
+}

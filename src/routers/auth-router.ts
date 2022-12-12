@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { authServices } from '../services/auth-services';
 import {
   authLoginValidator,
-  authPasswordValidator, checkCodeMiddleware, checkUserEmailMiddleware,
+  authPasswordValidator, checkCodeMiddleware, checkRefreshTokenMiddleware, checkUserEmailMiddleware,
   codeValidator,
   jwtMiddleware, registrationMiddleware
 } from '../middlewares/auth-middleware';
@@ -17,7 +17,7 @@ authRouter.post('/login',authLoginValidator, authPasswordValidator, inputValidat
   const result = await authServices.login(data)
 
   if (result) {
-    res.sendStatus(204)
+    res.cookie("refreshToken", result.refreshToken, {httpOnly: true} ).send(result.accessToken)
     return
   }
   res.sendStatus(401)
@@ -49,7 +49,8 @@ authRouter.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
   res.send(userInfo);
 })
 
-authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+authRouter.post('/refresh-token', checkRefreshTokenMiddleware, async (req: Request, res: Response) => {
   const rfToken = req.cookies.refreshToken
-
+  const result = await authServices.refreshToken(rfToken)
+  result ? res.send(result) : res.sendStatus(401)
 })
