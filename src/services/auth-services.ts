@@ -11,6 +11,7 @@ import { CreateUserInterface, UserInterface } from '../utilities/interfaces/user
 import { businessSerivce } from '../domain/business-serivce';
 import { tokenCollection } from '../db';
 import { refreshTokenDbRepository } from '../repositories/refresh-tokens/refresh-token-db-repository';
+import { ObjectId } from 'mongodb';
 
 export const authServices = {
   login: async(data: LoginInterface): Promise<TokensInterface|null> => {
@@ -42,13 +43,20 @@ export const authServices = {
     return { userId: payload._id.toString(), email: payload.email, login: payload.login };
   },
 
-  refreshToken: async(token: string): Promise<TokensInterface | null> => {
-    const payload: JwtPayloadInterface = await jwtService.decodeToken(token) as JwtPayloadInterface
+  refreshToken: async(token: string, user: UserInterface): Promise<TokensInterface | null> => {
     const checkToken = await refreshTokenDbRepository.findRfRoken(token)
     if (checkToken) return null
+    const payload = {_id: new ObjectId(user.id), email: user.email, login: user.login}
     const tokens = await jwtService.generateToken(payload)
     await refreshTokenDbRepository.createRfToken(tokens.refreshToken)
     return tokens
+  },
+
+  logout: async (token: string): Promise<boolean> => {
+    const checkToken = await refreshTokenDbRepository.findRfRoken(token)
+    if (checkToken) return false
+    await refreshTokenDbRepository.createRfToken(token)
+    return true
   }
 };
 

@@ -51,21 +51,6 @@ export const registrationMiddleware = async (req: Request, res: Response, next: 
   next()
 }
 
-export const confirmationEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const code = req.body.code
-  const user = await usersDbRepository.findUserByCode(code)
-  if (!user) {
-    res.sendStatus(404)
-    return
-  }
-
-  if (user && user.emailConfirm) {
-    res.status(400).send({ errorsMessages: [{ message: 'email already confirmed', field: 'email' }] });
-    return;
-  }
-
-  next()
-}
 
 export const checkUserEmailMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await usersDbRepository.findUserByEmail(req.body.email)
@@ -99,16 +84,23 @@ export const checkCodeMiddleware = async (req: Request, res: Response, next: Nex
 }
 
 export const checkRefreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const frToken: string | undefined = req.cookies.refershToken
-  if (!frToken) {
+  const rfToken: string | undefined = req.cookies.refershToken
+  if (!rfToken) {
     res.sendStatus(401)
     return
   }
 
-  const checkToken = await refreshTokenDbRepository.findRfRoken(frToken)
+  const checkToken = await refreshTokenDbRepository.findRfRoken(rfToken)
   if (checkToken) {
     res.sendStatus(401)
     return
   }
+  const payload: JwtPayloadInterface = await jwtService.decodeToken(rfToken) as JwtPayloadInterface
+  const user = await usersDbRepository.findUserByEmail(payload.email)
+  if (!user) {
+    res.sendStatus(401)
+    return
+  }
+  req.user = user
   next()
 }
